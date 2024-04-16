@@ -1,0 +1,21 @@
+package com.cisco.workflowmanager;
+
+public enum CollectorToolType {
+    TOPO_BGPLS_XTC,
+    CONFIG_PARSE,
+    LSP_CONFIG,
+    TRAFFIC_POLL,
+    LOGIN_FIND_MULTICAST,
+    LOGIN_POLL_MULTICAST,
+    SNMP_FIND_MULTICAST,
+    SNMP_POLL_MULTICAST,
+    TRAFFIC_DEMAND,
+    INVENTORY,
+    NETFLOW,
+    LAYOUT,
+    INTER_AS,
+    MATE_SQL,
+    MATE_CONVERT,
+    GET_SNMP,
+    TRIM_NODES;
+}

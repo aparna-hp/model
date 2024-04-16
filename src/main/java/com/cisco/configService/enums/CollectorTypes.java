@@ -1,0 +1,29 @@
+package com.cisco.configService.enums;
+
+public enum CollectorTypes {
+    TOPO_IGP ,
+    TOPO_BGPLS_XTC ,
+    TOPO_BGP ,
+    LSP_SNMP,
+    LSP_PCEP_XTC,
+    CONFIG_PARSE,
+    TOPO_VPN ,
+    TRAFFIC_POLL,
+    INVENTORY,
+    TRAFFIC_DEMAND,
+    LOGIN_FIND_MULTICAST,
+    LOGIN_POLL_MULTICAST,
+    SNMP_FIND_MULTICAST,
+    SNMP_POLL_MULTICAST,
+    NETFLOW,
+    LAYOUT,
+    EXTERNAL_SCRIPT,
+    DARE,
+    MULTICAST,
+    DEMAND_MESH_CREATOR,
+    DEMAND_FOR_LSPS,
+    DEMAND_FOR_P2MP_LSPS,
+    DEMAND_DEDUCTION,
+    COPY_DEMANDS,
+    SAGE
+}
