@@ -1,0 +1,102 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+	id 'org.springframework.boot' version '3.1.3' apply(false)
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'java'
+	id "io.freefair.lombok" version "8.2.2"
+	id 'maven-publish'
+}
+
+ext {
+	COLLECTOR_MODEL_VERSION = '1.0.0'
+	DEFAULT_MIN_VERSION = 0
+	DEFAULT_BUILD_TYPE = 'SNAPSHOT'
+
+	// Read min version from env var $MIN_VERSION
+	MIN_VERSION = System.getenv("MIN_VERSION") ?: DEFAULT_MIN_VERSION
+}
+
+// DOC: ./gradlew clean publish -Prelease=true
+if (project.hasProperty("release")) {
+	if (project.hasProperty("minVer")) {
+		version = COLLECTOR_MODEL_VERSION + '.' + findProperty("minVer")
+	} else {
+		version = COLLECTOR_MODEL_VERSION + '.' + MIN_VERSION
+	}
+} else {
+	version = COLLECTOR_MODEL_VERSION + '.' + MIN_VERSION + "-SNAPSHOT"
+}
+
+group = 'com.cisco.cwplanning'
+sourceCompatibility = '17'
+
+
+
+repositories {
+	maven {url "https://engci-maven.cisco.com/artifactory/wae-group"}
+	maven {url "https://engci-maven-master.cisco.com/artifactory/maven-proxy"}
+	maven { url "https://plugins.gradle.org/m2/" }
+	mavenCentral()
+}
+
+dependencyManagement {
+	imports {
+		mavenBom SpringBootPlugin.BOM_COORDINATES
+	}
+}
+
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+	implementation 'com.google.guava:guava:31.1-jre'
+	implementation 'org.json:json:20230618'
+	implementation (group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api')
+	implementation (group: 'org.glassfish.jaxb',name:'jaxb-runtime')
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			groupId = group
+			artifactId = project.getName()
+			version = version
+			from components.java
+		}
+	}
+	repositories {
+		repositories {
+			maven {
+				def baseUrl = "https://engci-maven-master.cisco.com/artifactory"
+				def snapshotRepoUrl = "${baseUrl}/wae-snapshot"
+				def releaseRepoUrl = "${baseUrl}/wae-release"
+				url = project.version.endsWith('SNAPSHOT') ? snapshotRepoUrl : releaseRepoUrl
+
+				println "#################################################################################"
+				println "#  CP VERSION: ${project.version}"
+				println	"#  ARTIFACT: " + jar.archiveFileName.get()
+				println "#  MVN REPOSITORY: ${url}"
+				println "#################################################################################"
+
+				credentials {
+					username "${DOCKER_HUB_USER_NAME}"
+					password "${DOCKER_HUB_PWD}"
+				}
+			}
+		}
+	}
+}
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
